@@ -20,10 +20,18 @@ namespace FabrykaR.Controllers
         }
 
         // GET: Maszyna
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var maszynyDbContext = _context.MaszynaSet.Include(m => m.Hala);
-            return View(await maszynyDbContext.ToListAsync());
+            if (string.IsNullOrEmpty(search))
+            {
+                var maszynyDbContext = _context.MaszynaSet.Include(m => m.Hala).OrderBy(m => m.Nazwa);
+                return View(await maszynyDbContext.ToListAsync());
+            }
+            else
+            {
+                var maszynyDbContext = _context.MaszynaSet.Include(m => m.Hala).Where(m => m.Nazwa.Contains(search)).OrderBy(m => m.Nazwa);
+                return View(await maszynyDbContext.ToListAsync());
+            }
         }
 
         // GET: Maszyna/Details/5
